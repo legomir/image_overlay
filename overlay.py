@@ -37,33 +37,28 @@ class Overlay(object):
     def save(self, filename):
         self.out_img.save(filename)
 
-    def draw_overlay(self):
-        pass
-
-    def draw_text(self, x, y):
+    def draw_block(self, text):
         draw = ImageDraw.Draw(self.out_img)
-        text_bbox = draw.textsize(
-            'super text, enen larger',
-            font=self.fonts['inconsolata_regular'],
-        )
 
-        container_x, container_y = scale_bbox(text_bbox, 1.05)
-        start_x, start_y = int(x * 0.95), int(y * 0.95)
+        text_box_size_x, text_box_size_y = draw.textsize(
+            text, font=self.fonts['inconsolata_regular'])
+        fill_size_x = int(text_box_size_x *  (1 + self.text_padding))
+        fill_size_y = int(text_box_size_y *  (1 + self.text_padding))
 
-        draw.rectangle(
-            (
-                (start_x, start_y),
-                (start_x + container_x, start_y + container_y)
-            ),
-            fill=(0, 0, 0, 90)
-        )
+    @property
+    def timecode(self):
+        '''
+        Holds timecode, only strings compatible with strftime can be assigned
+        '''
+        return self._timecode
 
-        draw.text(
-            (x, y),
-            'super text, enen larger',
-            font=self.fonts['inconsolata_regular'],
-            fill=(255, 255, 255, 255)
-        )
+    @property
+    def width(self):
+        return self.source_img.width
+
+    @property
+    def height(self):
+        return self.source_img.height
 
     @property
     def fonts(self):
@@ -74,13 +69,6 @@ class Overlay(object):
                 size=int(self.source_img.height * self.font_size)
             )
         }
-
-    @property
-    def timecode(self):
-        '''
-        Holds timecode, only strings compatible with strftime can be assigned
-        '''
-        return self._timecode
 
     @timecode.setter
     def timecode(self, time_format='%Y-%m-%d'):
