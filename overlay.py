@@ -33,10 +33,10 @@ class Overlay(object):
     def save(self, filename):
         self.out_img.save(filename)
 
-    def draw_overlay():
+    def draw_overlay(self):
         pass
 
-    def draw_text(self, x, y,):
+    def draw_text(self, x, y):
         draw = ImageDraw.Draw(self.out_img)
         text_bbox = draw.textsize(
             'super text, enen larger',
@@ -76,8 +76,17 @@ class Overlay(object):
         return time.strftime(time_format)
 
 
-def read_dpx_image_size(filename):
-    with open(filename) as f:
+def read_dpx_image_size(filepath):
+    """
+    Parse width and height of dpx image base on information in header
+
+    Args:
+        filepath: path to file
+
+    Returns:
+        (width, heigth)
+    """
+    with open(filepath) as f:
         f.seek(0)
         b = f.read(4)
         magic = b.decode(encoding='UTF-8')
@@ -93,6 +102,16 @@ def read_dpx_image_size(filename):
 
 
 def scale_bbox(bbox, percent):
+    """
+    Scaling proportionaly bounding box
+
+    Args:
+        bbox: Tuple width and height of bbox
+        percent: Percentage scale of bbox
+
+    Returns:
+        tuple of scale width and height
+    """
     return tuple(int(x * percent) for x in bbox)
 
 
