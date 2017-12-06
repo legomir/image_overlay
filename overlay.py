@@ -22,13 +22,17 @@ class Overlay(object):
 
     def __init__(self, imagepath):
         super(Overlay, self).__init__()
+
         self.imagepath = os.path.abspath(imagepath)
         self.source_img = Image.open(imagepath)
+
         self.out_img = Image.new(
             size=self.source_img.size,
             mode='RGBA',
             color=(0, 0, 0, 0)
         )
+
+        self._timecode = time.strftime('%Y-%m-%d')
 
     def save(self, filename):
         self.out_img.save(filename)
@@ -71,9 +75,14 @@ class Overlay(object):
             )
         }
 
-    @staticmethod
-    def generate_timecode(time_format='%Y-%m-%d'):
-        return time.strftime(time_format)
+    @property
+    def timecode(self):
+        return self._timecode
+
+    @timecode.setter
+    def timecode(self, time_format='%Y-%m-%d')
+        self._timecode = time.strftime(time_format)
+
 
 
 def read_dpx_image_size(filepath):
