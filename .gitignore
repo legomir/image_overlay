@@ -45,3 +45,12 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Virtual stodio code
+.vscode
+
+#My stuff
+.virtualenv
+
+#Python
+*.pyc
