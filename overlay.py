@@ -14,6 +14,7 @@ class Overlay(object):
     text_padding = 0.03
     text_brightness = 1.0
     text_fill_opacity = 0.75
+    text_fill_scale = 1.03
     text_alpha = 0.75
 
     font_size = 0.023
@@ -40,10 +41,11 @@ class Overlay(object):
     def draw_block(self, text):
         draw = ImageDraw.Draw(self.out_img)
 
-        text_box_size_x, text_box_size_y = draw.textsize(
+        text_bbox_x, text_bbox_y = draw.textsize(
             text, font=self.fonts['inconsolata_regular'])
-        fill_size_x = int(text_box_size_x *  (1 + self.text_padding))
-        fill_size_y = int(text_box_size_y *  (1 + self.text_padding))
+
+        fill_size_x = int(text_bbox_x *  self.text_fill_scale)
+        fill_size_y = int(text_bbox_y *  self.text_fill_scale)
 
     @property
     def timecode(self):
@@ -73,6 +75,36 @@ class Overlay(object):
     @timecode.setter
     def timecode(self, time_format='%Y-%m-%d'):
         self._timecode = time.strftime(time_format)
+
+    def _drawing_points(self, corner, text_bbox):
+        """
+        Holds drawings point for every possible block postion.
+
+        Args:
+            corner: specify corner by name, possible inputs;
+                'up_left', 'up_center', 'up_right',
+                'bottom_left', 'bottom_center', 'bottom_right'
+            text_bbox: tuple that contains width and height of text block
+        """
+        pad_height = int(self.height * self.text_fill_scale)
+        pad_width = int(self.width * self.text_fill_scale)
+        bbox_x, bbox_y = text_bbox
+        center = int(self.width / 2)
+
+        bottom_y = self.height - pad_height - bbox_y
+        right_start = self.width - pad_width - bbox_x
+        center_start = center - int(bbox_x / 2)
+
+        corners = {
+            'up_left': (pad_width, pad_height),
+            'up_center': (center_start, pad_height),
+            'up_right': (right_start, pad_height),
+            'bottom_left': (pad_width, bottom_y),
+            'bottom_center': (center_start, bottom_y),
+            'bootom_right': (right_start, bottom_y),
+        }
+
+        return corners[corner]
 
 
 
