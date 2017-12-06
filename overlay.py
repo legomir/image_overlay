@@ -77,6 +77,9 @@ class Overlay(object):
 
     @property
     def timecode(self):
+        '''
+        Holds timecode, only strings compatible with strftime can be assigned
+        '''
         return self._timecode
 
     @timecode.setter
