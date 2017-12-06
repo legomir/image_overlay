@@ -80,7 +80,7 @@ class Overlay(object):
         return self._timecode
 
     @timecode.setter
-    def timecode(self, time_format='%Y-%m-%d')
+    def timecode(self, time_format='%Y-%m-%d'):
         self._timecode = time.strftime(time_format)
 
 
@@ -95,17 +95,17 @@ def read_dpx_image_size(filepath):
     Returns:
         (width, heigth)
     """
-    with open(filepath) as f:
-        f.seek(0)
-        b = f.read(4)
-        magic = b.decode(encoding='UTF-8')
+    with open(filepath) as dpx_file:
+        dpx_file.seek(0)
+        dpx_bytes = dpx_file.read(4)
+        magic = dpx_bytes.decode(encoding='UTF-8')
         if magic != "SDPX" and magic != "XPDS":
             return None
         endianness = ">" if magic == "SDPX" else "<"
 
-        f.seek(772)
-        width = struct.unpack(endianness + 'I', f.read(4))[0]
-        heigth = struct.unpack(endianness + 'I', f.read(4))[0]
+        dpx_file.seek(772)
+        width = struct.unpack(endianness + 'I', dpx_file.read(4))[0]
+        heigth = struct.unpack(endianness + 'I', dpx_file.read(4))[0]
 
     return width, heigth
 
@@ -125,7 +125,5 @@ def scale_bbox(bbox, percent):
 
 
 if __name__ == '__main__':
-    imgpath = 'test_source.png'
-    overlay = Overlay(imgpath)
-    overlay.draw_text(10, 10)
-    overlay.save('outimage.png')
+    imgpath = 'test_image.jpg'
+    img = Overlay(imgpath)
