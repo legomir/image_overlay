@@ -80,11 +80,17 @@ class Overlay(object):
         """
         Holds drawings point for every possible block postion.
 
-        Args:
-            corner: specify corner by name, possible inputs;
-                'up_left', 'up_center', 'up_right',
-                'bottom_left', 'bottom_center', 'bottom_right'
-            text_bbox: tuple that contains width and height of text block
+        :param corner: specify corner by name, possible inputs:
+                - 'up_left'
+                - 'up_center'
+                - 'up_right',
+                - 'bottom_left'
+                - 'bottom_center'
+                - 'bottom_right'
+
+        :param text_bbox: tuple that contains width and height of text block
+
+        :returns: (start_point_x, start_point_y)
         """
         pad_height = int(self.height * self.text_fill_scale)
         pad_width = int(self.width * self.text_fill_scale)
@@ -112,11 +118,8 @@ def read_dpx_image_size(filepath):
     """
     Parse width and height of dpx image base on information in header
 
-    Args:
-        filepath: path to file
-
-    Returns:
-        (width, heigth)
+    :param filepath: path to file
+    :returns: (width, heigth)
     """
     with open(filepath) as dpx_file:
         dpx_file.seek(0)
@@ -137,12 +140,10 @@ def scale_bbox(bbox, percent):
     """
     Scaling proportionaly bounding box
 
-    Args:
-        bbox: Tuple width and height of bbox
-        percent: Percentage scale of bbox
+    :param bbox: Tuple width and height of bbox.
+    :param percent: Percentage scale of bbox.
 
-    Returns:
-        tuple of scale width and height
+    :returns: tuple of scale width and height
     """
     return tuple(int(x * percent) for x in bbox)
 
