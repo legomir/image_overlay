@@ -11,15 +11,14 @@ class Overlay(object):
     """
 
     # default parameters
+    font_size = 0.023
     text_padding = 0.03
     text_brightness = 1.0
     text_fill_opacity = 0.75
     text_fill_scale = 1.06
     text_alpha = 0.75
 
-    font_size = 0.023
-    help_font_size = 0.028
-    outline_opacity = 0.1
+    icon_scale = 0.15
 
     def __init__(self, imagepath):
         super(Overlay, self).__init__()
@@ -77,6 +76,9 @@ class Overlay(object):
             fill=(255, 255, 255, 255),
             font=self.fonts['inconsolata_regular']
         )
+
+    def draw_logo(self, logo_path):
+        draw = ImageDraw.Draw(self.out_img)
 
     @property
     def date(self):
