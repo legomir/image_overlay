@@ -56,3 +56,6 @@ Temporary Items
 *.pyc
 test_image.jpg
 test.png
+
+.gitignore
+.gitattributes
