@@ -11,14 +11,14 @@ class Overlay(object):
     """
 
     # default parameters
+    padding = 0.03
     font_size = 0.023
-    text_padding = 0.03
     text_brightness = 1.0
     text_fill_opacity = 0.75
     text_fill_scale = 1.06
     text_alpha = 0.75
 
-    icon_scale = 0.15
+    icon_scale = 0.1
 
     def __init__(self, imagepath):
         super(Overlay, self).__init__()
@@ -77,8 +77,13 @@ class Overlay(object):
             font=self.fonts['inconsolata_regular']
         )
 
-    def draw_logo(self, logo_path):
-        draw = ImageDraw.Draw(self.out_img)
+    def draw_logo(self, logo_path, drawing_point):
+        logo = Image.open(logo_path)
+        new_size = int(self.source_img.height * self.icon_scale)
+        logo.thumbnail((new_size, new_size))
+
+        drawing_point = self._drawing_points(drawing_point, logo.size)
+        self.out_img.paste(logo, drawing_point, logo)
 
     @property
     def date(self):
@@ -109,7 +114,7 @@ class Overlay(object):
             )
         }
 
-    def _drawing_points(self, corner, text_bbox):
+    def _drawing_points(self, corner, bbox):
         """
         Holds drawings point for every possible block postion.
 
@@ -125,9 +130,9 @@ class Overlay(object):
 
         :returns: (start_point_x, start_point_y)
         """
-        pad_height = int(self.height * self.text_padding)
-        pad_width = int(self.width * self.text_padding)
-        bbox_x, bbox_y = text_bbox
+        pad_height = int(self.height * self.padding)
+        pad_width = int(self.width * self.padding)
+        bbox_x, bbox_y = bbox
         center = int(self.width / 2)
 
         bottom_y = self.height - pad_height - bbox_y
@@ -183,5 +188,6 @@ def scale_bbox(bbox, percent):
 if __name__ == '__main__':
     imgpath = 'test_image.jpg'
     img = Overlay(imgpath)
-    img.draw_text_block('some stupid text', 'up_right')
+    img.draw_text_block('some stupid text', 'up_left')
+    img.draw_logo('logos/Commons-logo-en.svg.png', 'up_right')
     img.save_composed('test.png')
