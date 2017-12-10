@@ -33,7 +33,7 @@ class Overlay(object):
             color=(0, 0, 0, 0)
         )
 
-        self._timecode = time.strftime('%Y-%m-%d')
+        self._date = time.strftime('%Y-%m-%d')
 
     def save(self, filename):
         """
@@ -79,15 +79,15 @@ class Overlay(object):
         )
 
     @property
-    def timecode(self):
+    def date(self):
         '''
-        Holds timecode, only strings compatible with strftime can be assigned
+        Holds date, only strings compatible with strftime can be assigned
         '''
-        return self._timecode
+        return self._date
 
-    @timecode.setter
-    def timecode(self, time_format='%Y-%m-%d'):
-        self._timecode = time.strftime(time_format)
+    @date.setter
+    def date(self, time_format='%Y-%m-%d'):
+        self._date = time.strftime(time_format)
 
     @property
     def width(self):
