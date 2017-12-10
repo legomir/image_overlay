@@ -36,9 +36,13 @@ class Overlay(object):
         self._timecode = time.strftime('%Y-%m-%d')
 
     def save(self, filename):
+        """
+        Saving file to given destinition, extension is taken from filename\n
+            :param filename: file destinition
+        """
         self.out_img.save(filename)
 
-    def draw_block(self, text):
+    def draw_block(self, text, drawing_point):
         draw = ImageDraw.Draw(self.out_img)
 
         text_bbox_x, text_bbox_y = draw.textsize(
@@ -47,12 +51,27 @@ class Overlay(object):
         fill_size_x = int(text_bbox_x *  self.text_fill_scale)
         fill_size_y = int(text_bbox_y *  self.text_fill_scale)
 
+        x0, y0 = self._drawing_points(
+            drawing_point,
+            (fill_size_x, fill_size_y)
+        )
+
+        fill_opacity = int(self.text_fill_opacity * 255)
+        draw.rectangle(
+            [x0, y0, fill_size_x, fill_size_y],
+            fill=(0, 0, 0, fill_opacity)
+        )
+
     @property
     def timecode(self):
         '''
         Holds timecode, only strings compatible with strftime can be assigned
         '''
         return self._timecode
+
+    @timecode.setter
+    def timecode(self, time_format='%Y-%m-%d'):
+        self._timecode = time.strftime(time_format)
 
     @property
     def width(self):
@@ -71,10 +90,6 @@ class Overlay(object):
                 size=int(self.source_img.height * self.font_size)
             )
         }
-
-    @timecode.setter
-    def timecode(self, time_format='%Y-%m-%d'):
-        self._timecode = time.strftime(time_format)
 
     def _drawing_points(self, corner, text_bbox):
         """
@@ -111,7 +126,6 @@ class Overlay(object):
         }
 
         return corners[corner]
-
 
 
 def read_dpx_image_size(filepath):
@@ -151,3 +165,5 @@ def scale_bbox(bbox, percent):
 if __name__ == '__main__':
     imgpath = 'test_image.jpg'
     img = Overlay(imgpath)
+    img.draw_block('some stupid text', 'up_left')
+    img.save('test.png')
