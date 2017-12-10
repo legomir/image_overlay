@@ -14,7 +14,7 @@ class Overlay(object):
     text_padding = 0.03
     text_brightness = 1.0
     text_fill_opacity = 0.75
-    text_fill_scale = 1.03
+    text_fill_scale = 1.06
     text_alpha = 0.75
 
     font_size = 0.023
@@ -49,7 +49,7 @@ class Overlay(object):
 
         out.save(filename)
 
-    def draw_block(self, text, drawing_point):
+    def draw_text_block(self, text, drawing_point):
         draw = ImageDraw.Draw(self.out_img)
 
         text_size_x, text_size_y = draw.textsize(
@@ -67,6 +67,15 @@ class Overlay(object):
         draw.rectangle(
             [x0, y0, x0 + fill_size_x, y0 + fill_size_y],
             fill=(0, 0, 0, fill_opacity)
+        )
+
+        diff_x, diff_y = fill_size_x - text_size_x, fill_size_y - text_size_y
+        x1, y1 = x0 + int(float(diff_x) / 2), y0 + int(float(diff_y) / 2)
+        draw.text(
+            (x1, y1),
+            text,
+            fill=(255, 255, 255, 255),
+            font=self.fonts['inconsolata_regular']
         )
 
     @property
@@ -172,5 +181,5 @@ def scale_bbox(bbox, percent):
 if __name__ == '__main__':
     imgpath = 'test_image.jpg'
     img = Overlay(imgpath)
-    img.draw_block('some stupid text', 'up_right')
+    img.draw_text_block('some stupid text', 'up_right')
     img.save_composed('test.png')
