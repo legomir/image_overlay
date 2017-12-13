@@ -151,6 +151,44 @@ class Overlay(object):
         return corners[corner]
 
 
+class Frame(object):
+    """
+    Basic class for representing frame values
+    """
+    def __init__(self, frame_num, offset=0, padding=4):
+        """
+        docstring here
+            :param frame_num: frame_number (int)
+            :param offset=0: offseting frames(int)
+            :param padding=4: how many 0 fill on string representation
+        """
+        super(Frame, self).__init__()
+        assert frame_num + offset > 0
+        self.frame_num = frame_num
+        self.offset = offset
+        self.padding = padding
+
+    def __repr__(self):
+        return 'Frame({}, offset={}, padding={})'.format(
+            self.frame_num, self.offset, self.padding
+        )
+
+    def __str__(self):
+        return str(self.frame_num + self.offset).zfill(self.padding)
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        """
+        Shorthand to create Frame object from dictionary
+            :param dictionary: dictionary that contains frame data
+        """
+        keys = ('offset', 'padding')
+        d = {k: v for k, v in dictionary.items() if k in keys}
+        if d:
+            return cls(dictionary['number'], **d)
+        return cls(dictionary['number'])
+
+
 def read_dpx_image_size(filepath):
     """
     Parse width and height of dpx image base on information in header
@@ -186,8 +224,4 @@ def scale_bbox(bbox, percent):
 
 
 if __name__ == '__main__':
-    imgpath = 'test_image.jpg'
-    img = Overlay(imgpath)
-    img.draw_text_block('some stupid text', 'up_left')
-    img.draw_logo('logos/Commons-logo-en.svg.png', 'up_right')
-    img.save_composed('test.png')
+    print Frame.from_dict({'number': 10, 'padding': 3})
