@@ -194,11 +194,11 @@ class Timecode(object):
     possible_fps = (24, 25, 30, 48, 60)
 
     """docstring for Timecode."""
-    def __init__(self, hour=0, minut=0, second=0, frame=1, fps=24):
+    def __init__(self, hour=0, minute=0, second=0, frame=1, fps=24):
         super(Timecode, self).__init__()
 
         self.hour = hour
-        self.minut = minut
+        self.minute = minute
         self.second = second
         self.frame = frame
         self.fps = fps
@@ -263,6 +263,19 @@ class Timecode(object):
         ensure_value_beetwen(num, value_max=self.fps)
 
         self._frame = num
+
+    def __str__(self):
+        return '{hour}:{minute}:{second}:{frame}'.format(
+            hour=str(self.hour), minute=str(self.minute),
+            second=str(self.second), frame=self.frame
+        )
+
+    def __repr__(self):
+        return '{}(hour={}, minute={}, second={}, frame={}, fps={})'.format(
+            self.__class__.__name__, self.hour,
+            self.minute, self.second,
+            self.frame, self.fps
+        )
 
 
 def ensure_int(value):
