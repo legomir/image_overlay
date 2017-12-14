@@ -1,6 +1,7 @@
 import struct
 import time
 import os
+import functools
 
 from PIL import Image, ImageFont, ImageDraw
 
@@ -189,6 +190,107 @@ class Frame(object):
         return cls(dictionary['number'])
 
 
+class Timecode(object):
+    possible_fps = (24, 25, 30, 48, 60)
+
+    """docstring for Timecode."""
+    def __init__(self, hour=0, minut=0, second=0, frame=1, fps=24):
+        super(Timecode, self).__init__()
+
+        self.hour = hour
+        self.minut = minut
+        self.second = second
+        self.frame = frame
+        self.fps = fps
+
+    @property
+    def hour(self):
+        return self._hour
+
+    @hour.setter
+    def hour(self, num):
+        try:
+            num = int(num)
+        except TypeError as e:
+            raise e
+
+        if num < 0 or num > 23:
+            raise ValueError(
+                'this value should be beetwen int beetwen 0 and 23')
+
+        self._hour = num
+
+    @property
+    def minute(self):
+        return self._minute
+
+    @minute.setter
+    def minute(self, num):
+        try:
+            num = int(num)
+        except TypeError as e:
+            raise e
+
+        if num < 0 or num > 59:
+            raise ValueError(
+                'this value should be beetwen int beetwen 0 and 59')
+
+        self._minute = num
+
+
+    @property
+    def second(self):
+        return self._minute
+
+    @second.setter
+    def second(self, num):
+        try:
+            num = int(num)
+        except TypeError as e:
+            raise e
+
+        if num < 0 or num > 59:
+            raise ValueError(
+                'this value should be beetwen int beetwen 0 and 59')
+
+        self._second = num
+
+    @property
+    def fps(self):
+        return self._fps
+
+    @fps.setter
+    def fps(self, num):
+        try:
+            num = int(num)
+        except TypeError as e:
+            raise e
+
+        if num not in self.possible_fps:
+            msg = 'invalid value, value must be one of {}'.format(
+                ' ,'.join(str(x) for x in self.possible_fps)
+            )
+            raise ValueError(msg)
+
+        self._fps = num
+
+    @property
+    def frame(self):
+        return self._frame
+
+    @frame.setter
+    def frame(self, num):
+        try:
+            num = int(num)
+        except TypeError as e:
+            raise e
+
+        if num < 0 or num > self._fps:
+            msg = 'Value must be 1 and {}'.format(self.fps)
+            raise ValueError(msg)
+
+        self._frame = num
+
 def read_dpx_image_size(filepath):
     """
     Parse width and height of dpx image base on information in header
@@ -224,4 +326,5 @@ def scale_bbox(bbox, percent):
 
 
 if __name__ == '__main__':
-    print Frame.from_dict({'number': 10, 'padding': 3})
+    temp = Timecode()
+    temp.fps = 30
