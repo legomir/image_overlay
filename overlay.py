@@ -209,14 +209,8 @@ class Timecode(object):
 
     @hour.setter
     def hour(self, num):
-        try:
-            num = int(num)
-        except TypeError as e:
-            raise e
-
-        if num < 0 or num > 23:
-            raise ValueError(
-                'this value should be beetwen int beetwen 0 and 23')
+        num = ensure_int(num)
+        ensure_value_beetwen(num, value_max=59)
 
         self._hour = num
 
@@ -226,14 +220,8 @@ class Timecode(object):
 
     @minute.setter
     def minute(self, num):
-        try:
-            num = int(num)
-        except TypeError as e:
-            raise e
-
-        if num < 0 or num > 59:
-            raise ValueError(
-                'this value should be beetwen int beetwen 0 and 59')
+        num = ensure_int(num)
+        ensure_value_beetwen(num, value_max=59)
 
         self._minute = num
 
@@ -244,14 +232,8 @@ class Timecode(object):
 
     @second.setter
     def second(self, num):
-        try:
-            num = int(num)
-        except TypeError as e:
-            raise e
-
-        if num < 0 or num > 59:
-            raise ValueError(
-                'this value should be beetwen int beetwen 0 and 59')
+        num = ensure_int(num)
+        ensure_value_beetwen(num, value_max=59)
 
         self._second = num
 
@@ -261,10 +243,7 @@ class Timecode(object):
 
     @fps.setter
     def fps(self, num):
-        try:
-            num = int(num)
-        except TypeError as e:
-            raise e
+        num = ensure_int(num)
 
         if num not in self.possible_fps:
             msg = 'invalid value, value must be one of {}'.format(
@@ -280,16 +259,26 @@ class Timecode(object):
 
     @frame.setter
     def frame(self, num):
-        try:
-            num = int(num)
-        except TypeError as e:
-            raise e
-
-        if num < 0 or num > self._fps:
-            msg = 'Value must be 1 and {}'.format(self.fps)
-            raise ValueError(msg)
+        num = ensure_int(num)
+        ensure_value_beetwen(num, value_max=self.fps)
 
         self._frame = num
+
+
+def ensure_int(value):
+    try:
+        num = int(value)
+    except ValueError as e:
+        raise e
+
+    return num
+
+def ensure_value_beetwen(value, value_min=0, value_max=10):
+    if value < value_min or value > value_max:
+        msg = 'This value should beetwen {} and {}'.format(
+            value_min, value_max
+        )
+        raise ValueError(msg)
 
 def read_dpx_image_size(filepath):
     """
